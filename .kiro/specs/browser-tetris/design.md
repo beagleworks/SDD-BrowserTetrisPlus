@@ -216,50 +216,152 @@ export const validateGameState = (state: GameState): boolean => {
 };
 ```
 
-## テスト戦略
+## テスト駆動開発（TDD）戦略
 
-### 1. 単体テスト
-- **BlockSystem**: ブロック生成、回転、衝突検出
-- **GameField**: ライン消去、ゲームオーバー判定
-- **ScoreManager**: スコア計算、レベル更新
-- **InputHandler**: キー入力処理
+### TDD基本原則（t-wada氏推奨）
+1. **Red**: 失敗するテストを書く
+2. **Green**: テストを通す最小限のコードを書く
+3. **Refactor**: コードを改善する
 
-### 2. 統合テスト
-- ゲームループ全体の動作
-- ブロック配置からライン消去までの流れ
-- スキップ機能とスタック管理の連携
+### TDDサイクルの適用
 
-### 3. ユーザビリティテスト
-- キー操作の応答性
-- 視覚的フィードバックの適切性
-- モバイルデバイスでの操作性
+#### 1. 単体テスト（Red-Green-Refactor）
+各モジュールに対してTDDサイクルを適用：
 
-### 4. パフォーマンステスト
-- 60FPSでの安定動作
-- メモリリークの検証
-- 長時間プレイでの安定性
+**BlockSystem**:
+- Red: ブロック生成の失敗テストを書く
+- Green: 最小限のブロック生成機能を実装
+- Refactor: コードを改善し、次の機能（回転、衝突検出）へ
 
-### テスト実装例
+**GameField**:
+- Red: フィールド作成の失敗テストを書く
+- Green: 基本的なフィールド作成機能を実装
+- Refactor: ライン消去、ゲームオーバー判定へと段階的に発展
+
+**ScoreManager**:
+- Red: スコア計算の失敗テストを書く
+- Green: 基本的なスコア計算を実装
+- Refactor: レベル更新、複雑なスコア計算へ
+
+**InputHandler**:
+- Red: キー入力処理の失敗テストを書く
+- Green: 基本的な入力処理を実装
+- Refactor: 複雑な入力パターンへ対応
+
+#### 2. 統合テスト（Outside-In TDD）
+- ユーザーの視点から始めるアプローチ
+- ゲーム全体の動作から個別機能へ分解
+- モックを使用して外部依存を分離
+
+#### 3. テスト分類
+
+**Fast Tests（高速テスト）**:
+- 純粋関数のテスト
+- ビジネスロジックのテスト
+- 外部依存のないテスト
+
+**Slow Tests（低速テスト）**:
+- DOM操作を含むテスト
+- Canvas描画のテスト
+- 統合テスト
+
+#### 4. テスト構造（AAA Pattern）
 ```typescript
-// 単体テストの例
-describe('BlockSystem', () => {
-    test('should generate valid block types', () => {
+// Arrange（準備）
+// Act（実行）
+// Assert（検証）
+```
+
+### TDD実装例
+
+#### Red-Green-Refactorサイクル例
+```typescript
+// RED: 失敗するテストを書く
+describe('BlockSystem - generateRandomBlock', () => {
+    test('should generate a block with valid type', () => {
+        // Arrange
+        const validTypes = ['I', 'O', 'T', 'S', 'Z', 'J', 'L', 'MONO', 'DOMINO', 'TRIO_L', 'TRIO_I'];
+        
+        // Act
         const block = generateRandomBlock();
-        expect(Object.keys(BLOCKS)).toContain(block.type);
+        
+        // Assert
+        expect(validTypes).toContain(block.type);
+        expect(block.shape).toBeDefined();
+        expect(block.color).toBeDefined();
+        expect(block.rotation).toBe(0);
     });
+});
+
+// GREEN: テストを通す最小限のコード
+export const generateRandomBlock = (): Block => {
+    const types: BlockType[] = ['I', 'O', 'T', 'S', 'Z', 'J', 'L', 'MONO', 'DOMINO', 'TRIO_L', 'TRIO_I'];
+    const randomType = types[Math.floor(Math.random() * types.length)];
+    const blockDef = BLOCKS[randomType];
     
-    test('should detect collision correctly', () => {
+    return {
+        type: randomType,
+        shape: blockDef.shape,
+        color: blockDef.color,
+        rotation: 0
+    };
+};
+
+// REFACTOR: 次のテストケースを追加
+describe('BlockSystem - collision detection', () => {
+    test('should detect boundary collision', () => {
+        // Arrange
         const field = createGameField(10, 20);
         const block: Block = { type: 'I', shape: [[1,1,1,1]], color: '#00FFFF', rotation: 0 };
-        // 境界での衝突テスト
-        expect(checkCollision(block, -1, 0, field)).toBe(true);
+        
+        // Act & Assert
+        expect(checkCollision(block, -1, 0, field)).toBe(true); // 左境界
+        expect(checkCollision(block, 10, 0, field)).toBe(true); // 右境界
+        expect(checkCollision(block, 0, 20, field)).toBe(true); // 下境界
     });
     
-    test('should maintain immutability in state updates', () => {
+    test('should not detect collision in valid position', () => {
+        // Arrange
+        const field = createGameField(10, 20);
+        const block: Block = { type: 'O', shape: [[1,1],[1,1]], color: '#FFFF00', rotation: 0 };
+        
+        // Act & Assert
+        expect(checkCollision(block, 4, 0, field)).toBe(false);
+    });
+});
+```
+
+#### Outside-In TDD例
+```typescript
+// 最上位レベルから開始
+describe('Tetris Game Integration', () => {
+    test('should complete a full game cycle', () => {
+        // Arrange
+        const gameState = createInitialGameState();
+        
+        // Act - ブロックを配置してラインを完成させる
+        const stateWithBlock = placeBlockAtBottom(gameState);
+        const stateAfterLineClear = processLineClear(stateWithBlock);
+        
+        // Assert
+        expect(stateAfterLineClear.score).toBeGreaterThan(0);
+        expect(stateAfterLineClear.linesCleared).toBeGreaterThan(0);
+    });
+});
+
+// モックを使用した分離テスト
+describe('GameEngine with mocked dependencies', () => {
+    test('should update game state on timer tick', () => {
+        // Arrange
+        const mockRenderer = jest.fn();
+        const mockInputHandler = jest.fn();
         const initialState = createInitialGameState();
-        const newState = moveBlockInDirection(initialState, 'left');
-        expect(initialState).not.toBe(newState);
-        expect(initialState.blockX).not.toBe(newState.blockX);
+        
+        // Act
+        const updatedState = updateGameState(initialState, 16.67);
+        
+        // Assert
+        expect(updatedState.dropTimer).toBeGreaterThan(initialState.dropTimer);
     });
 });
 ```
