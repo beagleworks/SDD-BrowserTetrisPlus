@@ -8,28 +8,46 @@ export interface EffectPlanOptions {
   fps: number;
 }
 
+function easeOutDecay(t: number): number {
+  // Ease-out curve for a smoother, lingering highlight then quick fade
+  const clamped = Math.max(0, Math.min(1, t));
+  const inv = 1 - clamped;
+  // cubic ease-out decay of intensity
+  return inv * inv * inv; // (1 - t)^3
+}
+
 export function planLineClearEffect(totalRows: number, clearedRows: number[], opts: EffectPlanOptions): LineEffectFrame[][] {
   const frames: LineEffectFrame[][] = [];
   const frameCount = Math.max(1, Math.floor((opts.durationMs / 1000) * opts.fps));
   for (let i = 0; i < frameCount; i++) {
     const t = i / (frameCount - 1 || 1);
-    const intensity = 1 - t; // simple linear fade
+    const intensity = easeOutDecay(t);
     frames.push(clearedRows.map(rowIndex => ({ rowIndex, intensity })));
   }
   return frames;
+}
+
+function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
+  const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return m ? { r: parseInt(m[1], 16), g: parseInt(m[2], 16), b: parseInt(m[3], 16) } : null;
 }
 
 export function drawLineClearOverlay(
   ctx: CanvasRenderingContext2D,
   rows: number,
   cols: number,
-  frame: LineEffectFrame[]
+  frame: LineEffectFrame[],
+  options?: { colorHex?: string; maxAlpha?: number }
 ): void {
   const { width, height } = ctx.canvas;
   const cellH = height / rows;
-  // overlay color with alpha based on intensity
+  const color = options?.colorHex ?? '#22d3ee'; // accent cyan
+  const rgb = hexToRgb(color) ?? { r: 255, g: 255, b: 255 };
+  const maxAlpha = options?.maxAlpha ?? 0.6;
+
   frame.forEach(({ rowIndex, intensity }) => {
-    ctx.fillStyle = `rgba(255,255,255,${Math.max(0, Math.min(1, intensity)) * 0.6})`;
+    const alpha = Math.max(0, Math.min(1, intensity)) * maxAlpha;
+    ctx.fillStyle = `rgba(${rgb.r},${rgb.g},${rgb.b},${alpha})`;
     ctx.fillRect(0, rowIndex * cellH, width, cellH);
   });
 }
