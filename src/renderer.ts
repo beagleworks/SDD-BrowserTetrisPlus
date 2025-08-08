@@ -30,6 +30,28 @@ export function drawGameField(ctx: CanvasRenderingContext2D, field: number[][]):
   ctx.strokeRect(0, 0, width, height);
 }
 
+export function drawCurrentBlock(
+  ctx: CanvasRenderingContext2D,
+  fieldRows: number,
+  fieldCols: number,
+  block: { shape: number[][]; color?: string },
+  x: number,
+  y: number
+): void {
+  const { width, height } = ctx.canvas;
+  const cellW = width / fieldCols;
+  const cellH = height / fieldRows;
+  ctx.fillStyle = block.color ?? '#9ca3af';
+  for (let r = 0; r < block.shape.length; r++) {
+    for (let c = 0; c < block.shape[r].length; c++) {
+      if (!block.shape[r][c]) continue;
+      const px = (x + c) * cellW;
+      const py = (y + r) * cellH;
+      ctx.fillRect(px, py, cellW, cellH);
+    }
+  }
+}
+
 export function drawNextBlock(ctx: CanvasRenderingContext2D, block: { shape: number[][]; color?: string }): void {
   const canvas = ctx.canvas;
   const width = canvas.width;
