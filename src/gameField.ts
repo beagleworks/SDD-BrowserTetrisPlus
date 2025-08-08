@@ -63,3 +63,24 @@ export function clearLines(field: number[][], lines: number[]): number[][] {
   const newTopRows = Array.from({ length: clearedCount }, () => emptyRow.slice());
   return [...newTopRows, ...remainingRows];
 }
+
+export function isGameOver(field: number[][], block: Block): boolean {
+  const width = field[0]?.length ?? 0;
+  const shape = rotateShapeTimes(block.shape, 0);
+  const shapeWidth = shape[0]?.length ?? 0;
+  const spawnX = Math.floor((width - shapeWidth) / 2);
+  const spawnY = 0;
+  // Collision at spawn means game over
+  for (let r = 0; r < shape.length; r++) {
+    for (let c = 0; c < shape[r].length; c++) {
+      if (!shape[r][c]) continue;
+      const x = spawnX + c;
+      const y = spawnY + r;
+      if (y < 0 || y >= field.length || x < 0 || x >= width) {
+        return true;
+      }
+      if (field[y][x]) return true;
+    }
+  }
+  return false;
+}

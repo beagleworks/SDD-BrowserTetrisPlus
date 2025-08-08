@@ -10,6 +10,10 @@ export function calculateDropInterval(level: number): number {
 }
 
 export function updateGameState(deltaMs: number, state: GameState): GameState {
+  if (state.gameStatus !== 'playing') {
+    return state;
+  }
+
   let next: GameState = { ...state };
 
   // Accumulate drop timer

@@ -1,6 +1,7 @@
 import type { GameState } from './gameState';
 import { moveLeft, moveRight, moveDown, rotateClockwise } from './movement';
 import { skipCurrentBlock } from './skipAction';
+import { resetGameState } from './gameStatus';
 
 export function handleKeyDown(key: string, state: GameState): GameState {
   switch (key) {
@@ -16,6 +17,14 @@ export function handleKeyDown(key: string, state: GameState): GameState {
     case 's':
     case 'S':
       return skipCurrentBlock(state);
+    case 'p':
+    case 'P':
+    case 'Escape': {
+      const nextStatus = state.gameStatus === 'paused' ? 'playing' : 'paused';
+      return { ...state, gameStatus: nextStatus };
+    }
+    case 'Enter':
+      return state.gameStatus === 'gameOver' ? resetGameState() : state;
     default:
       return state;
   }

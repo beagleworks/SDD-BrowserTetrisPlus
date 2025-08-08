@@ -63,3 +63,15 @@ export function drawNextBlock(ctx: CanvasRenderingContext2D, block: { shape: num
     }
   }
 }
+
+export function drawPauseScreen(ctx: CanvasRenderingContext2D): void {
+  const { width, height } = ctx.canvas;
+  ctx.fillStyle = 'rgba(0,0,0,0.5)';
+  ctx.fillRect(0, 0, width, height);
+}
+
+export function drawGameOver(ctx: CanvasRenderingContext2D, finalScore: number): void {
+  const { width, height } = ctx.canvas;
+  ctx.fillStyle = 'rgba(0,0,0,0.7)';
+  ctx.fillRect(0, 0, width, height);
+}
