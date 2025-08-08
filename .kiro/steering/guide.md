@@ -1,13 +1,13 @@
-# プロジェクトガイド
+# Project Guide
 
-## プロジェクトについて
+## About the Project
 
-ブラウザで動作するテトリスゲームを開発します。ゲームを面白くするために追加のルールがあります。
+We are developing a Tetris game that runs in the browser. There are additional rules to make the game more interesting.
 
-## 開発方針
+## Development Guidelines
 
-- TypeScriptを用いる
-- 極力TypeScriptのclassは使わずにコーディングを行う
-- t-wada氏が推奨する方法でテスト駆動開発を行う
-- タスクの小分類が完了する毎に git add . && git commit -m "(タスクのタイトル)" を行う
-- テストが通らない際、テストを改ざんしてテストを通すのは禁止します。テストの妥当性に疑問がある場合は、その旨を伝えてください。
+- Use TypeScript
+- Avoid using TypeScript classes as much as possible in coding
+- Follow test-driven development using the methods recommended by t-wada
+- Execute `git add . && git commit -m "(task title)"` after completing each subtask
+- It is prohibited to modify tests to make them pass when tests are failing. If you have doubts about the validity of a test, please communicate that.
