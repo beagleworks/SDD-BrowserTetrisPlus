@@ -1,5 +1,5 @@
 import type { Block } from './types';
-import { rotateShapeTimes } from './rotation';
+import { rotateShapeTimes } from './rotation.js';
 
 export function checkCollision(block: Block, x: number, y: number, field: number[][], rotation: number = 0): boolean {
   const shape = rotateShapeTimes(block.shape, (block.rotation + rotation) % 4);

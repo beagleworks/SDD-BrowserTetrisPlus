@@ -1,5 +1,5 @@
-import type { GameState } from './gameState';
-import { moveDown } from './movement';
+import type { GameState } from './gameState.js';
+import { moveDown } from './movement.js';
 
 export function calculateDropInterval(level: number): number {
   // Basic curve: faster as level increases, clamp to a minimum

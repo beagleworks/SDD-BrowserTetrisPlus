@@ -1,5 +1,5 @@
 import type { Block } from './types';
-import { rotateShapeTimes } from './rotation';
+import { rotateShapeTimes } from './rotation.js';
 
 export function createGameField(width: number, height: number): number[][] {
   return Array.from({ length: height }, () => Array(width).fill(0));

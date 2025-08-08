@@ -1,7 +1,7 @@
-import type { GameState } from './gameState';
-import { moveLeft, moveRight, moveDown, rotateClockwise } from './movement';
-import { skipCurrentBlock } from './skipAction';
-import { resetGameState } from './gameStatus';
+import type { GameState } from './gameState.js';
+import { moveLeft, moveRight, moveDown, rotateClockwise } from './movement.js';
+import { skipCurrentBlock } from './skipAction.js';
+import { resetGameState } from './gameStatus.js';
 
 export function handleKeyDown(key: string, state: GameState): GameState {
   switch (key) {

@@ -1,5 +1,5 @@
 import type { Block } from './types';
-import { BLOCKS } from './blocks';
+import { BLOCKS } from './blocks.js';
 
 const TYPES = Object.keys(BLOCKS) as (keyof typeof BLOCKS)[];
 
@@ -27,12 +27,12 @@ export function advanceToNextBlock<T extends { currentBlock: Block | null; nextB
   if (!state.currentBlock && !state.nextBlock) {
     const current = generateRandomBlock();
     const next = generateRandomBlock();
-    return { ...state, currentBlock: current, nextBlock: next };
+    return { ...state, currentBlock: current, nextBlock: next } as T;
   }
   // If there is next, move it to current and generate a fresh next
   if (state.nextBlock) {
-    return { ...state, currentBlock: state.nextBlock, nextBlock: generateRandomBlock() };
+    return { ...state, currentBlock: state.nextBlock, nextBlock: generateRandomBlock() } as T;
   }
   // Fallback: only current exists, create next
-  return { ...state, nextBlock: generateRandomBlock() };
+  return { ...state, nextBlock: generateRandomBlock() } as T;
 }

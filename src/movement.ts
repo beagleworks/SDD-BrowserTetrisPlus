@@ -1,6 +1,6 @@
 import type { Block } from './types';
 import type { GameState } from './gameState';
-import { checkCollision } from './collision';
+import { checkCollision } from './collision.js';
 
 function canPlace(state: GameState, x: number, y: number, block: Block): boolean {
   return !checkCollision(block, x, y, state.field);

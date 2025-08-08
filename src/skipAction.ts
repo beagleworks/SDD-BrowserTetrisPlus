@@ -1,6 +1,6 @@
-import type { GameState } from './gameState';
-import { canUseSkip, useSkipStack } from './skipManager';
-import { generateRandomBlock } from './blockSystem';
+import type { GameState } from './gameState.js';
+import { canUseSkip, useSkipStack } from './skipManager.js';
+import { generateRandomBlock } from './blockSystem.js';
 
 export function skipCurrentBlock(state: GameState): GameState {
   if (!canUseSkip(state.skipStacks)) return state;

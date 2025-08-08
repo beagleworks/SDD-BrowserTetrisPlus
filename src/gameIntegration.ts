@@ -1,8 +1,8 @@
-import type { GameState } from './gameState';
-import { updateGameState } from './gameLoop';
-import { placeBlock, checkLines, clearLines } from './gameField';
-import { addScore, addLinesCleared, updateLevel } from './scoreManager';
-import { canUseSkip, recoverSkipStacks } from './skipManager';
+import type { GameState } from './gameState.js';
+import { updateGameState } from './gameLoop.js';
+import { placeBlock, checkLines, clearLines } from './gameField.js';
+import { addScore, addLinesCleared, updateLevel } from './scoreManager.js';
+import { canUseSkip, recoverSkipStacks } from './skipManager.js';
 
 export function stepGame(deltaMs: number, state: GameState): GameState {
   // Update timers and attempt to drop

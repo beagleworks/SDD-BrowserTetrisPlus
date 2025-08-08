@@ -1,5 +1,5 @@
-import type { GameState } from './gameState';
-import { createInitialGameState } from './gameState';
+import type { GameState } from './gameState.js';
+import { createInitialGameState } from './gameState.js';
 
 export function handleGameOver(state: GameState): GameState {
   return { ...state, gameStatus: 'gameOver' };

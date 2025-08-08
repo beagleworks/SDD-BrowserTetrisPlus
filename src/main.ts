@@ -1,8 +1,8 @@
-import { createInitialGameState } from './gameState';
-import { handleKeyDown } from './inputHandler';
-import { updateGameState } from './gameLoop';
-import { drawGameField, drawCurrentBlock, drawNextBlock, drawPauseScreen, drawGameOver } from './renderer';
-import { updateUiText } from './uiDisplay';
+import { createInitialGameState } from './gameState.js';
+import { handleKeyDown } from './inputHandler.js';
+import { updateGameState } from './gameLoop.js';
+import { drawGameField, drawCurrentBlock, drawNextBlock, drawPauseScreen, drawGameOver } from './renderer.js';
+import { updateUiText } from './uiDisplay.js';
 
 const GRID_COLS = 10;
 const GRID_ROWS = 20;
