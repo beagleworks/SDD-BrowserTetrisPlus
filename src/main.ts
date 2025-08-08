@@ -3,6 +3,8 @@ import { handleKeyDown } from './inputHandler.js';
 import { updateGameState } from './gameLoop.js';
 import { drawGameField, drawCurrentBlock, drawNextBlock, drawPauseScreen, drawGameOver } from './renderer.js';
 import { updateUiText } from './uiDisplay.js';
+import { stepGame } from './gameIntegration.js';
+import { advanceToNextBlock } from './blockSystem.js';
 
 const GRID_COLS = 10;
 const GRID_ROWS = 20;
@@ -73,14 +75,24 @@ function setupInput(getState: () => any, setState: (s: any) => void) {
   }, { passive: false });
 }
 
+function ensureSpawn(state: ReturnType<typeof createInitialGameState>) {
+  if (!state.currentBlock || !state.nextBlock) {
+    return advanceToNextBlock({ ...state });
+  }
+  return state;
+}
+
 function main() {
   let state = createInitialGameState();
+  state = ensureSpawn(state);
+
   const getState = () => state;
   const setState = (s: typeof state) => { state = s; };
 
   const tick = (timeMs: number) => {
-    // Use fixed delta based on requestAnimationFrame cadence (~16ms)
-    const next = updateGameState(16.67, state);
+    // Integrate game step (drop, lock, clear). Then spawn if needed.
+    let next = stepGame(16.67, state);
+    next = ensureSpawn(next);
     setState(next);
     render(next);
     requestAnimationFrame(tick);
