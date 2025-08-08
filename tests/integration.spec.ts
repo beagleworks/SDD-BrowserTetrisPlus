@@ -9,9 +9,12 @@ function makeField(width: number, height: number, fill = 0): number[][] {
 
 describe('Integration - stepGame', () => {
   test('locks piece, clears completed line, updates score and totals', () => {
-    // 4x4 field; bottom row missing one cell at x=3
-    const field = makeField(4, 4, 1);
-    field[3][3] = 0; // empty spot to complete
+    // 4x4 field; only bottom row nearly full (one hole)
+    const field = makeField(4, 4, 0);
+    field[3][0] = 1;
+    field[3][1] = 1;
+    field[3][2] = 1;
+    // (3,3) is empty -> will be filled by MONO lock
 
     let s = createInitialGameState();
     s = { ...s, field, score: 0, linesCleared: 0, skipStacks: 4 };
