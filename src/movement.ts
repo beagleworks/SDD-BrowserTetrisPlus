@@ -29,3 +29,12 @@ export function moveDown(state: GameState): GameState {
     ? { ...state, blockY: ny }
     : state;
 }
+
+export function rotateClockwise(state: GameState): GameState {
+  if (!state.currentBlock) return state;
+  const rotated: Block = { ...state.currentBlock, rotation: (state.currentBlock.rotation + 1) % 4 };
+  if (checkCollision(rotated, state.blockX, state.blockY, state.field)) {
+    return state;
+  }
+  return { ...state, currentBlock: rotated };
+}
