@@ -1,6 +1,6 @@
 # 実装計画
 
-- [ ] 1. プロジェクト構造とHTML基盤の作成
+- [x] 1. プロジェクト構造とHTML基盤の作成
   - HTMLファイル、CSSファイル、TypeScriptファイルの基本構造を作成
   - TypeScript設定ファイル（tsconfig.json）の作成
   - Canvas要素とUI要素の配置
