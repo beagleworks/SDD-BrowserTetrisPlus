@@ -35,3 +35,31 @@ export function placeBlock(field: number[][], block: Block, x: number, y: number
   }
   return next;
 }
+
+export function checkLines(field: number[][]): number[] {
+  const lines: number[] = [];
+  for (let r = 0; r < field.length; r++) {
+    if (field[r].every(v => v !== 0)) {
+      lines.push(r);
+    }
+  }
+  return lines;
+}
+
+export function clearLines(field: number[][], lines: number[]): number[][] {
+  if (lines.length === 0) return field;
+  const width = field[0]?.length ?? 0;
+  const height = field.length;
+
+  const toRemove = new Set(lines);
+  const remainingRows: number[][] = [];
+  for (let r = 0; r < height; r++) {
+    if (!toRemove.has(r)) {
+      remainingRows.push(field[r].slice());
+    }
+  }
+  const clearedCount = lines.length;
+  const emptyRow = Array(width).fill(0);
+  const newTopRows = Array.from({ length: clearedCount }, () => emptyRow.slice());
+  return [...newTopRows, ...remainingRows];
+}
