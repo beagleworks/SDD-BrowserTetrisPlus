@@ -10,5 +10,6 @@ module.exports = {
       { useESM: true, tsconfig: '<rootDir>/tsconfig.json' }
     ]
   },
-  collectCoverageFrom: ['src/**/*.ts', '!src/main.ts']
+  collectCoverageFrom: ['src/**/*.ts', '!src/main.ts'],
+  moduleNameMapper: { '^(\.{1,2}/.*)\.js$': '$1' }
 };
